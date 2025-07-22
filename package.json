@@ -2,17 +2,34 @@
   "name": "tracker-api",
   "version": "1.0.3",
   "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && tsc --module ES6 --outDir dist/esm",
+    "prepare": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": [
+    "tracking",
+    "analytics",
+    "user-behavior",
+    "typescript"
+  ],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "A TypeScript library for tracking user behavior and analytics",
   "devDependencies": {
     "@types/node": "^20.19.9",
     "typescript": "^5.8.3"
+  },
+  "peerDependencies": {
+    "typescript": ">=4.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
