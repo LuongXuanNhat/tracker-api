@@ -14,13 +14,13 @@ A powerful and flexible library for tracking user behavior in web applications.
 ## Installation
 
 ```bash
-npm install track-behavior-user
+npm install tracker-api
 ```
 
 ## Quick Start
 
 ```javascript
-import { init, trackPageLoad, trackClick } from "track-behavior-user";
+import { init, trackPageLoad, trackClick } from "tracker-api";
 
 // Initialize the tracker
 init({
@@ -88,13 +88,13 @@ Thư viện mạnh mẽ và linh hoạt để theo dõi hành vi người dùng 
 ## Cài đặt
 
 ```bash
-npm install track-behavior-user
+npm install tracker-api
 ```
 
 ## Bắt đầu nhanh
 
 ```javascript
-import { init, trackPageLoad, trackClick } from "track-behavior-user";
+import { init, trackPageLoad, trackClick } from "tracker-api";
 
 // Khởi tạo tracker
 init({
