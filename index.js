@@ -1,7 +1,7 @@
 // index.js
 // Entry point cho tracker-api library
 
-import TrackingAPI from './tracking.api.js';
+import TrackingAPI from "./tracking.api.js";
 
 // Singleton instance cho global usage
 let globalTracker = null;
@@ -28,7 +28,7 @@ export function init(options = {}) {
  */
 export function getTracker() {
   if (!globalTracker) {
-    console.warn('Tracker not initialized. Call init() first.');
+    console.warn("Tracker not initialized. Call init() first.");
     return null;
   }
   return globalTracker;
@@ -68,19 +68,45 @@ export async function trackBatch(events) {
 /**
  * Track click event using global tracker
  */
-export async function trackClick(userId, elementType, pageUrl, elementId = null, metadata = {}) {
+export async function trackClick(
+  userId,
+  elementType,
+  pageUrl,
+  elementId = null,
+  metadata = {},
+  immediate = false
+) {
   const tracker = getTracker();
   if (!tracker) return null;
-  return await tracker.trackClick(userId, elementType, pageUrl, elementId, metadata);
+  return await tracker.trackClick(
+    userId,
+    elementType,
+    pageUrl,
+    elementId,
+    metadata,
+    immediate
+  );
 }
 
 /**
  * Track view event using global tracker
  */
-export async function trackView(userId, elementType, pageUrl, elementId = null, metadata = {}) {
+export async function trackView(
+  userId,
+  elementType,
+  pageUrl,
+  elementId = null,
+  metadata = {}
+) {
   const tracker = getTracker();
   if (!tracker) return null;
-  return await tracker.trackView(userId, elementType, pageUrl, elementId, metadata);
+  return await tracker.trackView(
+    userId,
+    elementType,
+    pageUrl,
+    elementId,
+    metadata
+  );
 }
 
 /**
@@ -95,7 +121,12 @@ export async function trackPageLoad(userId, pageUrl, metadata = {}) {
 /**
  * Track scroll event using global tracker
  */
-export async function trackScroll(userId, pageUrl, scrollPercentage, metadata = {}) {
+export async function trackScroll(
+  userId,
+  pageUrl,
+  scrollPercentage,
+  metadata = {}
+) {
   const tracker = getTracker();
   if (!tracker) return null;
   return await tracker.trackScroll(userId, pageUrl, scrollPercentage, metadata);
@@ -104,10 +135,22 @@ export async function trackScroll(userId, pageUrl, scrollPercentage, metadata = 
 /**
  * Track hover event using global tracker
  */
-export async function trackHover(userId, elementType, pageUrl, elementId = null, metadata = {}) {
+export async function trackHover(
+  userId,
+  elementType,
+  pageUrl,
+  elementId = null,
+  metadata = {}
+) {
   const tracker = getTracker();
   if (!tracker) return null;
-  return await tracker.trackHover(userId, elementType, pageUrl, elementId, metadata);
+  return await tracker.trackHover(
+    userId,
+    elementType,
+    pageUrl,
+    elementId,
+    metadata
+  );
 }
 
 /**

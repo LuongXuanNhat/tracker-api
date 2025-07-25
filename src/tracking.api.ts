@@ -144,16 +144,20 @@ export class TrackingAPI {
     elementType: string,
     pageUrl: string,
     elementId: string | null = null,
-    metadata: Record<string, any> = {}
+    metadata: Record<string, any> = {},
+    immediate: boolean = false
   ): Promise<TrackingResponse | null> {
-    return this.track({
-      userId,
-      eventType: "click",
-      elementType,
-      pageUrl,
-      elementId,
-      metadata,
-    });
+    return this.track(
+      {
+        userId,
+        eventType: "click",
+        elementType,
+        pageUrl,
+        elementId,
+        metadata,
+      },
+      immediate
+    );
   }
 
   public async trackView(
@@ -161,46 +165,58 @@ export class TrackingAPI {
     elementType: string,
     pageUrl: string,
     elementId: string | null = null,
-    metadata: Record<string, any> = {}
+    metadata: Record<string, any> = {},
+    immediate: boolean = false
   ): Promise<TrackingResponse | null> {
-    return this.track({
-      userId,
-      eventType: "view",
-      elementType,
-      pageUrl,
-      elementId,
-      metadata,
-    });
+    return this.track(
+      {
+        userId,
+        eventType: "view",
+        elementType,
+        pageUrl,
+        elementId,
+        metadata,
+      },
+      immediate
+    );
   }
 
   public async trackPageLoad(
     userId: string,
     pageUrl: string,
-    metadata: Record<string, any> = {}
+    metadata: Record<string, any> = {},
+    immediate: boolean = false
   ): Promise<TrackingResponse | null> {
-    return this.track({
-      userId,
-      eventType: "pageload",
-      pageUrl,
-      metadata,
-    });
+    return this.track(
+      {
+        userId,
+        eventType: "pageload",
+        pageUrl,
+        metadata,
+      },
+      immediate
+    );
   }
 
   public async trackScroll(
     userId: string,
     pageUrl: string,
     scrollPercentage: number,
-    metadata: Record<string, any> = {}
+    metadata: Record<string, any> = {},
+    immediate: boolean = false
   ): Promise<TrackingResponse | null> {
-    return this.track({
-      userId,
-      eventType: "scroll",
-      pageUrl,
-      metadata: {
-        ...metadata,
-        scrollPercentage,
+    return this.track(
+      {
+        userId,
+        eventType: "scroll",
+        pageUrl,
+        metadata: {
+          ...metadata,
+          scrollPercentage,
+        },
       },
-    });
+      immediate
+    );
   }
 
   private async sendEvents(events: EventData[]): Promise<TrackingResponse> {
