@@ -8,10 +8,16 @@ let globalTracker: TrackingAPI | null = null;
 /**
  * Initialize global tracker instance
  * @param options - Configuration options
+ * @param force - Force re-initialize with new options (default: false)
  * @returns Tracker instance
  */
-export function init(options: TrackerOptions = {}): TrackingAPI {
-  globalTracker = new TrackingAPI(options);
+export function init(
+  options: TrackerOptions = {},
+  force: boolean = false
+): TrackingAPI {
+  if (!globalTracker || force) {
+    globalTracker = new TrackingAPI(options);
+  }
   return globalTracker;
 }
 

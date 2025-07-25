@@ -15,10 +15,13 @@ let globalTracker = null;
  * @param {number} [options.retryDelay=1000] - Delay between retries in milliseconds
  * @param {number} [options.batchSize=10] - Number of events to batch together
  * @param {number} [options.batchTimeout=2000] - Time to wait before sending batch
+ * @param {boolean} [force=false] - Force re-initialize with new options
  * @returns {TrackingAPI} Tracker instance
  */
-export function init(options = {}) {
-  globalTracker = new TrackingAPI(options);
+export function init(options = {}, force = false) {
+  if (!globalTracker || force) {
+    globalTracker = new TrackingAPI(options);
+  }
   return globalTracker;
 }
 
