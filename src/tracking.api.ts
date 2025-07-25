@@ -226,7 +226,7 @@ export class TrackingAPI {
   }
 
   private async sendEvents(events: EventData[]): Promise<TrackingResponse> {
-    return this.makeRequest(`${this.baseURL}/track`, {
+    return this.makeRequest(`${this.baseURL}/tracking/event`, {
       method: "POST",
       body: JSON.stringify({ events }),
     });
