@@ -1,5 +1,5 @@
 // tracking.api.ts
-import { TrackerOptions, EventData, TrackingResponse } from './types';
+import { TrackerOptions, EventData, TrackingResponse } from "./types";
 
 export class TrackingAPI {
   private baseURL: string;
@@ -18,19 +18,19 @@ export class TrackingAPI {
     this.timeout = options.timeout || 5000;
     this.retryAttempts = options.retryAttempts || 3;
     this.retryDelay = options.retryDelay || 1000;
-    
+
     // Batch processing configuration
     this.batchSize = options.batchSize || 10;
     this.batchTimeout = options.batchTimeout || 2000;
     this.eventQueue = [];
     this.batchTimer = null;
-    
+
     // Auto-flush queue when page unloads
-    if (typeof window !== 'undefined') {
-      window.addEventListener('beforeunload', () => {
+    if (typeof window !== "undefined") {
+      window.addEventListener("beforeunload", () => {
         this.flush();
       });
-      
+
       // Also flush periodically
       setInterval(() => {
         if (this.eventQueue.length > 0) {
@@ -41,65 +41,73 @@ export class TrackingAPI {
   }
 
   private getBaseURL(): string {
-    if (typeof process !== 'undefined' && process.env) {
-      return process.env.NODE_ENV === 'production' 
-        ? process.env.URL_PRODUCTION as string
-        : process.env.URL_DEVELOPMENT as string;
+    if (typeof process !== "undefined" && process.env) {
+      return process.env.NODE_ENV === "production"
+        ? (process.env.URL_PRODUCTION as string)
+        : (process.env.URL_DEVELOPMENT as string);
     }
-    
+
     // Fallback for browser environment
-    return typeof window !== 'undefined' && window?.location?.origin?.includes('localhost')
-      ? 'http://localhost:3002'
-      : 'http://localhost:3002'; // Can be changed to production URL
+    return typeof window !== "undefined" &&
+      window?.location?.origin?.includes("localhost")
+      ? "http://localhost:3002/api"
+      : "http://localhost:3002/api"; // Can be changed to production URL
   }
 
   private getHeaders(): Record<string, string> {
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     };
-    
+
     if (this.apiKey) {
-      headers['x-api-key'] = this.apiKey;
+      headers["x-api-key"] = this.apiKey;
     }
-    
+
     return headers;
   }
 
-  private async makeRequest(url: string, options: RequestInit, attempt: number = 1): Promise<TrackingResponse> {
+  private async makeRequest(
+    url: string,
+    options: RequestInit,
+    attempt: number = 1
+  ): Promise<TrackingResponse> {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), this.timeout);
-    
+
     try {
       const response = await fetch(url, {
         ...options,
         headers: this.getHeaders(),
         signal: controller.signal,
       });
-      
+
       clearTimeout(timeoutId);
-      
+
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-      
+
       return await response.json();
     } catch (error) {
       clearTimeout(timeoutId);
-      
+
       if (attempt < this.retryAttempts && !controller.signal.aborted) {
         await this.delay(this.retryDelay * attempt);
         return this.makeRequest(url, options, attempt + 1);
       }
-      
+
       throw error;
     }
   }
 
   private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  public async track(eventData: EventData, immediate: boolean = false): Promise<TrackingResponse | null> {
+  public async track(
+    eventData: EventData,
+    immediate: boolean = false
+  ): Promise<TrackingResponse | null> {
     const event = {
       ...eventData,
       timestamp: Date.now(),
@@ -110,37 +118,37 @@ export class TrackingAPI {
     }
 
     this.eventQueue.push(event);
-    
+
     if (this.eventQueue.length >= this.batchSize) {
       return this.flush();
     }
-    
+
     if (!this.batchTimer) {
       this.batchTimer = setTimeout(() => this.flush(), this.batchTimeout);
     }
-    
+
     return null;
   }
 
   public async trackBatch(events: EventData[]): Promise<TrackingResponse> {
-    const eventsWithTimestamp = events.map(event => ({
+    const eventsWithTimestamp = events.map((event) => ({
       ...event,
       timestamp: Date.now(),
     }));
-    
+
     return this.sendEvents(eventsWithTimestamp);
   }
 
   public async trackClick(
-    userId: string, 
-    elementType: string, 
-    pageUrl: string, 
-    elementId: string | null = null, 
+    userId: string,
+    elementType: string,
+    pageUrl: string,
+    elementId: string | null = null,
     metadata: Record<string, any> = {}
   ): Promise<TrackingResponse | null> {
     return this.track({
       userId,
-      eventType: 'click',
+      eventType: "click",
       elementType,
       pageUrl,
       elementId,
@@ -149,15 +157,15 @@ export class TrackingAPI {
   }
 
   public async trackView(
-    userId: string, 
-    elementType: string, 
-    pageUrl: string, 
-    elementId: string | null = null, 
+    userId: string,
+    elementType: string,
+    pageUrl: string,
+    elementId: string | null = null,
     metadata: Record<string, any> = {}
   ): Promise<TrackingResponse | null> {
     return this.track({
       userId,
-      eventType: 'view',
+      eventType: "view",
       elementType,
       pageUrl,
       elementId,
@@ -166,27 +174,27 @@ export class TrackingAPI {
   }
 
   public async trackPageLoad(
-    userId: string, 
-    pageUrl: string, 
+    userId: string,
+    pageUrl: string,
     metadata: Record<string, any> = {}
   ): Promise<TrackingResponse | null> {
     return this.track({
       userId,
-      eventType: 'pageload',
+      eventType: "pageload",
       pageUrl,
       metadata,
     });
   }
 
   public async trackScroll(
-    userId: string, 
-    pageUrl: string, 
+    userId: string,
+    pageUrl: string,
     scrollPercentage: number,
     metadata: Record<string, any> = {}
   ): Promise<TrackingResponse | null> {
     return this.track({
       userId,
-      eventType: 'scroll',
+      eventType: "scroll",
       pageUrl,
       metadata: {
         ...metadata,
@@ -197,7 +205,7 @@ export class TrackingAPI {
 
   private async sendEvents(events: EventData[]): Promise<TrackingResponse> {
     return this.makeRequest(`${this.baseURL}/track`, {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify({ events }),
     });
   }
@@ -207,14 +215,14 @@ export class TrackingAPI {
       clearTimeout(this.batchTimer);
       this.batchTimer = null;
     }
-    
+
     if (this.eventQueue.length === 0) {
       return null;
     }
-    
+
     const events = [...this.eventQueue];
     this.eventQueue = [];
-    
+
     return this.sendEvents(events);
   }
 }
