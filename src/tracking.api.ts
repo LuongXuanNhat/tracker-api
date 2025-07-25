@@ -13,7 +13,7 @@ export class TrackingAPI {
   private batchTimer: NodeJS.Timeout | null;
 
   constructor(options: TrackerOptions = {}) {
-    this.baseURL = this.getBaseURL();
+    this.baseURL = options.baseUrl || this.getBaseURL();
     this.apiKey = options.apiKey || null;
     this.timeout = options.timeout || 5000;
     this.retryAttempts = options.retryAttempts || 3;
@@ -41,17 +41,23 @@ export class TrackingAPI {
   }
 
   private getBaseURL(): string {
-    if (typeof process !== "undefined" && process.env) {
-      return process.env.NODE_ENV === "production"
-        ? (process.env.URL_PRODUCTION as string)
-        : (process.env.URL_DEVELOPMENT as string);
+    // For Next.js client-side environment variables
+    if (typeof window !== "undefined") {
+      if (process.env.NODE_ENV === "production") {
+        return (
+          process.env.NEXT_PUBLIC_API_URL_TRACK_PROD ||
+          "https://your-production-url.com/api"
+        );
+      } else {
+        return (
+          process.env.NEXT_PUBLIC_API_URL_TRACK_DEV ||
+          "http://localhost:3002/api"
+        );
+      }
     }
 
-    // Fallback for browser environment
-    return typeof window !== "undefined" &&
-      window?.location?.origin?.includes("localhost")
-      ? "http://localhost:3002/api"
-      : "http://localhost:3002/api"; // Can be changed to production URL
+    // Fallback
+    return "http://localhost:3002/api";
   }
 
   private getHeaders(): Record<string, string> {
