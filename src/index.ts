@@ -27,8 +27,9 @@ export function init(
  */
 export function getTracker(): TrackingAPI | null {
   if (!globalTracker) {
-    console.warn("Tracker not initialized. Call init() first.");
-    return null;
+    globalTracker = new TrackingAPI({
+      apiKey: process.env.NEXT_PUBLIC_TRACKING_API_KEY,
+    });
   }
   return globalTracker;
 }
