@@ -1,36 +1,72 @@
 {
   "name": "tracker-api",
-  "version": "1.0.8",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
-  "files": [
-    "dist",
-    "README.md"
-  ],
+  "version": "2.0.0",
+  "description": "A comprehensive JavaScript/TypeScript library for user behavior tracking and analytics",
+  "main": "index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
-    "build": "tsc && tsc --module ES6 --outDir dist/esm",
-    "prepare": "npm run build",
-    "test": "jest"
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "clean": "rimraf lib",
+    "prepare": "npm run clean && npm run build",
+    "test": "node index.js",
+    "test:ts": "node -r ts-node/register examples/usage-examples.ts",
+    "test:js": "node examples/javascript-examples.js",
+    "dev": "npm run build:watch",
+    "lint": "tsc --noEmit"
   },
   "keywords": [
     "tracking",
     "analytics",
     "user-behavior",
-    "typescript"
+    "web-analytics",
+    "typescript",
+    "javascript",
+    "customer-management",
+    "website-analytics",
+    "real-time-analytics",
+    "api-client"
   ],
-  "author": "",
-  "license": "ISC",
-  "description": "A TypeScript library for tracking user behavior and analytics",
+  "author": "Your Name",
+  "license": "MIT",
   "devDependencies": {
-    "@types/jest": "^30.0.0",
-    "@types/node": "^20.19.9",
-    "jest": "^30.0.5",
-    "ts-jest": "^29.4.0",
-    "typescript": "^5.8.3"
+    "@types/node": "^20.0.0",
+    "rimraf": "^5.0.0",
+    "typescript": "^5.0.0",
+    "ts-node": "^10.9.0"
   },
   "peerDependencies": {
-    "typescript": ">=4.0.0"
+    "axios": "^1.0.0"
+  },
+  "files": [
+    "lib/",
+    "src/",
+    "examples/",
+    "index.js",
+    "tracking-api-new.js",
+    "*.d.ts",
+    "README.md",
+    "README-NEW.md",
+    "MIGRATION.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/tracker-api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/tracker-api/issues"
+  },
+  "homepage": "https://github.com/yourusername/tracker-api#readme",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "require": "./index.js",
+      "import": "./lib/index.js"
+    },
+    "./package.json": "./package.json"
   },
   "publishConfig": {
     "access": "public"

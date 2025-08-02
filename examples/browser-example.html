@@ -1,0 +1,119 @@
+// examples/browser-example.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracker API Browser Example</title>
+</head>
+<body>
+    <h1>Tracker API Browser Example</h1>
+    
+    <button id="track-page-view">Track Page View</button>
+    <button id="track-click">Track Click</button>
+    <button id="track-custom">Track Custom Event</button>
+    <button id="flush-events">Flush Events</button>
+    
+    <div id="output"></div>
+
+    <script type="module">
+        // Import the library (adjust path as needed)
+        import { init, trackPageView, trackClick, trackCustomEvent, flush } from '../lib/index.js';
+        
+        // Initialize tracker
+        const tracker = init({
+            apiKey: 'your-api-key',
+            baseUrl: 'http://localhost:3002',
+            debug: true,
+            batchSize: 3
+        });
+
+        const output = document.getElementById('output');
+        
+        function log(message) {
+            const div = document.createElement('div');
+            div.textContent = `${new Date().toLocaleTimeString()}: ${message}`;
+            output.appendChild(div);
+        }
+
+        // Generate session ID
+        const sessionId = 'session_' + Math.random().toString(36).substr(2, 9);
+        const userId = 'user_' + Math.random().toString(36).substr(2, 9);
+
+        // Track page view button
+        document.getElementById('track-page-view').addEventListener('click', async () => {
+            try {
+                await trackPageView(userId, window.location.pathname, sessionId, {
+                    title: document.title,
+                    referrer: document.referrer
+                });
+                log('Page view tracked successfully');
+            } catch (error) {
+                log('Error tracking page view: ' + error.message);
+            }
+        });
+
+        // Track click button
+        document.getElementById('track-click').addEventListener('click', async () => {
+            try {
+                await trackClick(userId, 'button', window.location.pathname, 'track-click', sessionId, {
+                    buttonText: 'Track Click'
+                });
+                log('Click tracked successfully');
+            } catch (error) {
+                log('Error tracking click: ' + error.message);
+            }
+        });
+
+        // Track custom event button
+        document.getElementById('track-custom').addEventListener('click', async () => {
+            try {
+                await trackCustomEvent('custom_action', userId, window.location.pathname, sessionId, {
+                    actionType: 'demo',
+                    timestamp: Date.now()
+                });
+                log('Custom event tracked successfully');
+            } catch (error) {
+                log('Error tracking custom event: ' + error.message);
+            }
+        });
+
+        // Flush events button
+        document.getElementById('flush-events').addEventListener('click', async () => {
+            try {
+                await flush();
+                log('Events flushed successfully');
+            } catch (error) {
+                log('Error flushing events: ' + error.message);
+            }
+        });
+
+        // Auto track page view on load
+        window.addEventListener('load', () => {
+            trackPageView(userId, window.location.pathname, sessionId, {
+                title: document.title,
+                loadTime: performance.timing.loadEventEnd - performance.timing.navigationStart
+            }).then(() => {
+                log('Auto page view tracked on load');
+            }).catch(error => {
+                log('Error auto tracking page view: ' + error.message);
+            });
+        });
+
+        // Track scroll events
+        let scrollTracked = false;
+        window.addEventListener('scroll', () => {
+            const scrollPercentage = Math.round(
+                (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
+            );
+            
+            if (scrollPercentage >= 50 && !scrollTracked) {
+                scrollTracked = true;
+                tracker.trackScroll(userId, window.location.pathname, scrollPercentage, sessionId)
+                    .then(() => log(`Scroll tracked at ${scrollPercentage}%`))
+                    .catch(error => log('Error tracking scroll: ' + error.message));
+            }
+        });
+    </script>
+</body>
+</html>

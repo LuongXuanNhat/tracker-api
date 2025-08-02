@@ -1,0 +1,46 @@
+{
+  "name": "tracker-api",
+  "version": "2.0.0",
+  "main": "lib/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "lib",
+    "README.md",
+    "README-NEW.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "build:lib": "echo 'JavaScript lib already created'",
+    "build:all": "npm run build",
+    "prepare": "npm run build:all",
+    "test": "jest"
+  },
+  "keywords": [
+    "tracking",
+    "analytics",
+    "user-behavior",
+    "typescript",
+    "javascript",
+    "event-tracking",
+    "customer-management",
+    "website-analytics"
+  ],
+  "author": "",
+  "license": "ISC",
+  "description": "A comprehensive TypeScript/JavaScript library for user behavior tracking and analytics",
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/node": "^20.19.9",
+    "jest": "^30.0.5",
+    "ts-jest": "^29.4.0",
+    "typescript": "^5.8.3"
+  },
+  "peerDependencies": {
+    "typescript": ">=4.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

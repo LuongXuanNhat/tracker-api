@@ -1,7 +1,7 @@
 // index.js
-// Entry point cho tracker-api library
+// Entry point cho tracker-api library - Updated version
 
-import TrackingAPI from "./tracking.api.js";
+import TrackingAPI from "./tracking-api-new.js";
 
 // Singleton instance cho global usage
 let globalTracker = null;
@@ -10,11 +10,13 @@ let globalTracker = null;
  * Initialize global tracker instance
  * @param {Object} options - Configuration options
  * @param {string} [options.apiKey] - API key for authentication
+ * @param {string} [options.baseUrl] - Base URL for API
  * @param {number} [options.timeout=5000] - Request timeout in milliseconds
  * @param {number} [options.retryAttempts=3] - Number of retry attempts
  * @param {number} [options.retryDelay=1000] - Delay between retries in milliseconds
  * @param {number} [options.batchSize=10] - Number of events to batch together
  * @param {number} [options.batchTimeout=2000] - Time to wait before sending batch
+ * @param {boolean} [options.debug=false] - Enable debug logging
  * @param {boolean} [force=false] - Force re-initialize with new options
  * @returns {TrackingAPI} Tracker instance
  */
@@ -47,7 +49,6 @@ export function createTracker(options = {}) {
   return new TrackingAPI(options);
 }
 
-// Convenience methods sử dụng global tracker
 /**
  * Track an event using global tracker
  * @param {Object} eventData - Event data
@@ -70,6 +71,20 @@ export async function trackBatch(events) {
 }
 
 /**
+ * Track page view event using global tracker
+ */
+export async function trackPageView(
+  userId,
+  pageUrl,
+  sessionId = null,
+  metadata = {}
+) {
+  const tracker = getTracker();
+  if (!tracker) return null;
+  return await tracker.trackPageView(userId, pageUrl, sessionId, metadata);
+}
+
+/**
  * Track click event using global tracker
  */
 export async function trackClick(
@@ -77,8 +92,8 @@ export async function trackClick(
   elementType,
   pageUrl,
   elementId = null,
-  metadata = {},
-  immediate = false
+  sessionId = null,
+  metadata = {}
 ) {
   const tracker = getTracker();
   if (!tracker) return null;
@@ -87,13 +102,55 @@ export async function trackClick(
     elementType,
     pageUrl,
     elementId,
-    metadata,
-    immediate
+    sessionId,
+    metadata
   );
 }
 
 /**
+ * Track scroll event using global tracker
+ */
+export async function trackScroll(
+  userId,
+  pageUrl,
+  scrollPercentage,
+  sessionId = null,
+  metadata = {}
+) {
+  const tracker = getTracker();
+  if (!tracker) return null;
+  return await tracker.trackScroll(userId, pageUrl, scrollPercentage, sessionId, metadata);
+}
+
+/**
+ * Track custom event using global tracker
+ */
+export async function trackCustomEvent(
+  eventType,
+  userId,
+  pageUrl,
+  sessionId = null,
+  metadata = {}
+) {
+  const tracker = getTracker();
+  if (!tracker) return null;
+  return await tracker.trackCustomEvent(eventType, userId, pageUrl, sessionId, metadata);
+}
+
+// Legacy methods for backward compatibility
+/**
+ * Track page load event using global tracker
+ * @deprecated Use trackPageView instead
+ */
+export async function trackPageLoad(userId, pageUrl, metadata = {}) {
+  const tracker = getTracker();
+  if (!tracker) return null;
+  return await tracker.trackPageLoad(userId, pageUrl, metadata);
+}
+
+/**
  * Track view event using global tracker
+ * @deprecated Use trackCustomEvent with 'view' type instead
  */
 export async function trackView(
   userId,
@@ -104,40 +161,12 @@ export async function trackView(
 ) {
   const tracker = getTracker();
   if (!tracker) return null;
-  return await tracker.trackView(
-    userId,
-    elementType,
-    pageUrl,
-    elementId,
-    metadata
-  );
-}
-
-/**
- * Track page load event using global tracker
- */
-export async function trackPageLoad(userId, pageUrl, metadata = {}) {
-  const tracker = getTracker();
-  if (!tracker) return null;
-  return await tracker.trackPageLoad(userId, pageUrl, metadata);
-}
-
-/**
- * Track scroll event using global tracker
- */
-export async function trackScroll(
-  userId,
-  pageUrl,
-  scrollPercentage,
-  metadata = {}
-) {
-  const tracker = getTracker();
-  if (!tracker) return null;
-  return await tracker.trackScroll(userId, pageUrl, scrollPercentage, metadata);
+  return await tracker.trackView(userId, elementType, pageUrl, elementId, metadata);
 }
 
 /**
  * Track hover event using global tracker
+ * @deprecated Use trackCustomEvent with 'hover' type instead
  */
 export async function trackHover(
   userId,
@@ -159,6 +188,7 @@ export async function trackHover(
 
 /**
  * Get events with filters using global tracker
+ * @deprecated Requires authentication token - use tracker.setToken() first
  */
 export async function getEvents(filters = {}) {
   const tracker = getTracker();
@@ -168,6 +198,7 @@ export async function getEvents(filters = {}) {
 
 /**
  * Get events by user ID using global tracker
+ * @deprecated Requires authentication token - use tracker.setToken() first
  */
 export async function getUserEvents(userId, filters = {}) {
   const tracker = getTracker();
@@ -187,20 +218,33 @@ export async function flush() {
 // Export class for advanced usage
 export { TrackingAPI };
 
-// Default export
+// Default export with all functions
 export default {
+  // Core functions
   init,
   getTracker,
   createTracker,
+  
+  // Event tracking
   track,
   trackBatch,
+  trackPageView,
   trackClick,
-  trackView,
-  trackPageLoad,
   trackScroll,
+  trackCustomEvent,
+  
+  // Legacy methods (deprecated)
+  trackPageLoad,
+  trackView,
   trackHover,
+  
+  // Data retrieval (requires auth)
   getEvents,
   getUserEvents,
+  
+  // Utility
   flush,
+  
+  // Class export
   TrackingAPI,
 };
