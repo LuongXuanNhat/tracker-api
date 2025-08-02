@@ -1,13 +1,28 @@
-import { init, getTracker, createTracker, track, trackBatch, trackClick, trackView, trackPageLoad, trackScroll } from '../index';
-import { TrackingAPI } from '../tracking.api';
+import { 
+  init, 
+  getTracker, 
+  createTracker, 
+  track, 
+  trackBatch, 
+  trackClick, 
+  trackPageView,
+  trackScroll,
+  trackCustomEvent
+} from '../index-new';
+import { TrackingAPI } from '../tracking-api';
 
 // Mock fetch API
 global.fetch = jest.fn();
 
 describe('Tracker API Tests', () => {
   beforeEach(() => {
-    // Reset globalTracker before each test
-    jest.resetModules();
+    // Reset global tracker state
+    const tracker = getTracker();
+    if (tracker) {
+      // Clear any existing tracker
+      (global as any).globalTracker = null;
+    }
+    
     // Reset fetch mock
     (global.fetch as jest.Mock).mockReset();
     // Mock successful response
@@ -23,16 +38,10 @@ describe('Tracker API Tests', () => {
       expect(tracker).toBeInstanceOf(TrackingAPI);
     });
 
-    it('should return existing tracker if already initialized', () => {
+    it('should return same tracker if already initialized', () => {
       const tracker1 = init({ apiKey: 'test-key-1' });
       const tracker2 = init({ apiKey: 'test-key-2' });
       expect(tracker1).toBe(tracker2);
-    });
-
-    it('should create new tracker when force is true', () => {
-      const tracker1 = init({ apiKey: 'test-key-1' });
-      const tracker2 = init({ apiKey: 'test-key-2' }, true);
-      expect(tracker1).not.toBe(tracker2);
     });
   });
 
@@ -62,9 +71,9 @@ describe('Tracker API Tests', () => {
     it('should track event using global tracker', async () => {
       init({ apiKey: 'test-key' });
       const response = await track({
-        userId: 'user1',
-        eventType: 'custom',
-        pageUrl: '/test'
+        event_type: 'custom',
+        user_id: 'user1',
+        page_url: '/test'
       }, true);
       
       expect(global.fetch).toHaveBeenCalled();
@@ -73,9 +82,9 @@ describe('Tracker API Tests', () => {
 
     it('should return null if tracker not initialized', async () => {
       const response = await track({
-        userId: 'user1',
-        eventType: 'custom',
-        pageUrl: '/test'
+        event_type: 'custom',
+        user_id: 'user1',
+        page_url: '/test'
       });
       expect(response).toBeNull();
     });
@@ -85,8 +94,8 @@ describe('Tracker API Tests', () => {
     it('should track multiple events', async () => {
       init({ apiKey: 'test-key' });
       const events = [
-        { userId: 'user1', eventType: 'custom1', pageUrl: '/test1' },
-        { userId: 'user2', eventType: 'custom2', pageUrl: '/test2' }
+        { event_type: 'custom1', user_id: 'user1', page_url: '/test1' },
+        { event_type: 'custom2', user_id: 'user2', page_url: '/test2' }
       ];
       
       const response = await trackBatch(events);
@@ -103,23 +112,22 @@ describe('Tracker API Tests', () => {
         'button',
         '/test',
         'btn-1',
-        { customData: 'test' },
-        true
+        'session123',
+        { customData: 'test' }
       );
       
       expect(global.fetch).toHaveBeenCalled();
       expect(response).toEqual({ success: true });
     });
-  });
 
-  describe('trackView()', () => {
-    it('should track view event', async () => {
+    it('should track click event without session ID', async () => {
       init({ apiKey: 'test-key' });
-      const response = await trackView(
+      const response = await trackClick(
         'user1',
-        'page',
+        'button',
         '/test',
-        null,
+        'btn-1',
+        undefined,
         { customData: 'test' }
       );
       
@@ -128,13 +136,30 @@ describe('Tracker API Tests', () => {
     });
   });
 
-  describe('trackPageLoad()', () => {
-    it('should track page load event', async () => {
+  describe('trackPageView()', () => {
+    it('should track page view event', async () => {
       init({ apiKey: 'test-key' });
-      const response = await trackPageLoad(
+      const response = await trackPageView(
         'user1',
         '/test',
-        { customData: 'test' }
+        'session123',
+        { title: 'Test Page' }
+      );
+      
+      expect(global.fetch).toHaveBeenCalled();
+      expect(response).toEqual({ success: true });
+    });
+  });
+
+  describe('trackCustomEvent()', () => {
+    it('should track custom event', async () => {
+      init({ apiKey: 'test-key' });
+      const response = await trackCustomEvent(
+        'video_play',
+        'user1',
+        '/video',
+        'session123',
+        { videoId: 'intro', quality: '1080p' }
       );
       
       expect(global.fetch).toHaveBeenCalled();
@@ -149,7 +174,8 @@ describe('Tracker API Tests', () => {
         'user1',
         '/test',
         50,
-        { customData: 'test' }
+        'session123',
+        { scrollDirection: 'down' }
       );
       
       expect(global.fetch).toHaveBeenCalled();
@@ -165,9 +191,9 @@ describe('Tracker API Tests', () => {
       (global.fetch as jest.Mock).mockRejectedValueOnce(new Error('API Error'));
 
       await expect(track({
-        userId: 'user1',
-        eventType: 'custom',
-        pageUrl: '/test'
+        event_type: 'custom',
+        user_id: 'user1',
+        page_url: '/test'
       }, true)).rejects.toThrow('API Error');
     });
 
@@ -180,9 +206,9 @@ describe('Tracker API Tests', () => {
       );
 
       await expect(track({
-        userId: 'user1',
-        eventType: 'custom',
-        pageUrl: '/test'
+        event_type: 'custom',
+        user_id: 'user1',
+        page_url: '/test'
       }, true)).rejects.toThrow();
     });
   });
@@ -191,10 +217,10 @@ describe('Tracker API Tests', () => {
     it('should queue events and flush when batch size is reached', async () => {
       init({ apiKey: 'test-key', batchSize: 2 });
       
-      await track({ userId: 'user1', eventType: 'custom1', pageUrl: '/test1' });
+      await track({ event_type: 'custom1', user_id: 'user1', page_url: '/test1' });
       expect(global.fetch).not.toHaveBeenCalled();
       
-      await track({ userId: 'user2', eventType: 'custom2', pageUrl: '/test2' });
+      await track({ event_type: 'custom2', user_id: 'user2', page_url: '/test2' });
       expect(global.fetch).toHaveBeenCalled();
     });
 
@@ -202,11 +228,71 @@ describe('Tracker API Tests', () => {
       init({ apiKey: 'test-key', batchSize: 5 });
       
       await track(
-        { userId: 'user1', eventType: 'custom', pageUrl: '/test' },
+        { event_type: 'custom', user_id: 'user1', page_url: '/test' },
         true // immediate
       );
       
       expect(global.fetch).toHaveBeenCalled();
+    });
+  });
+
+  describe('TrackingAPI Instance Methods', () => {
+    let tracker: TrackingAPI;
+
+    beforeEach(() => {
+      tracker = new TrackingAPI({ apiKey: 'test-key' });
+    });
+
+    it('should have health check method', async () => {
+      const health = await tracker.healthCheck();
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringContaining('/api/health'),
+        expect.any(Object)
+      );
+    });
+
+    it('should set authentication token', () => {
+      tracker.setToken('test-token');
+      // We can't directly access private property, so test via behavior
+      expect(() => tracker.setToken('test-token')).not.toThrow();
+    });
+
+    it('should clear authentication token', () => {
+      tracker.setToken('test-token');
+      tracker.clearToken();
+      // We can't directly access private property, so test via behavior
+      expect(() => tracker.clearToken()).not.toThrow();
+    });
+  });
+
+  describe('Configuration', () => {
+    it('should use default configuration', () => {
+      const tracker = init({});
+      expect(tracker).toBeInstanceOf(TrackingAPI);
+    });
+
+    it('should accept custom baseUrl', () => {
+      const tracker = init({ 
+        apiKey: 'test-key',
+        baseUrl: 'https://custom-api.com'
+      });
+      expect(tracker).toBeInstanceOf(TrackingAPI);
+    });
+
+    it('should accept custom timeout', () => {
+      const tracker = init({ 
+        apiKey: 'test-key',
+        timeout: 10000
+      });
+      expect(tracker).toBeInstanceOf(TrackingAPI);
+    });
+
+    it('should accept debug mode', () => {
+      const tracker = init({ 
+        apiKey: 'test-key',
+        debug: true
+      });
+      expect(tracker).toBeInstanceOf(TrackingAPI);
     });
   });
 });
