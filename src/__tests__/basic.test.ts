@@ -1,4 +1,4 @@
-import { init, getTracker } from '../index-new';
+import { init, getTracker } from '../index';
 
 describe('Basic Test', () => {
   it('should pass basic test', () => {

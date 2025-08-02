@@ -1,5 +1,5 @@
 // examples/usage-examples.ts
-import { init, TrackingAPI, trackPageView, trackClick } from '../src/index-new';
+import { init, TrackingAPI, trackPageView, trackClick } from '../src/index';
 
 // Example 1: Basic usage with global tracker
 async function basicUsage() {

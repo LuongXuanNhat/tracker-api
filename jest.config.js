@@ -2,19 +2,12 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  roots: ['<rootDir>/src'],
   testMatch: [
-    '**/__tests__/**/*.ts',
-    '**/?(*.)+(spec|test).ts'
+    '**/__tests__/**/*.test.ts'
   ],
   transform: {
     '^.+\\.ts$': 'ts-jest'
   },
-  collectCoverageFrom: [
-    'src/**/*.ts',
-    '!src/**/*.d.ts',
-    '!src/__tests__/**'
-  ],
-  moduleFileExtensions: ['ts', 'js', 'json'],
-  testTimeout: 10000
+  testTimeout: 5000,
+  verbose: true
 };

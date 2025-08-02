@@ -8,7 +8,7 @@ import {
   trackPageView,
   trackScroll,
   trackCustomEvent
-} from '../index-new';
+} from '../index';
 import { TrackingAPI } from '../tracking-api';
 
 // Mock fetch API

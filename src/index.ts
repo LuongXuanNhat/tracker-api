@@ -1,4 +1,4 @@
-// index-new.ts - Main entry point for the tracking library
+// index.ts - Main entry point for the tracking library
 import { TrackingAPI } from './tracking-api';
 import { TrackerOptions, EventData, TrackingResponse } from './types';
 
