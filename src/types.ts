@@ -1,6 +1,7 @@
 // types.ts
 export interface TrackerOptions {
   apiKey?: string;
+  baseUrl?: string;
   timeout?: number;
   retryAttempts?: number;
   retryDelay?: number;
