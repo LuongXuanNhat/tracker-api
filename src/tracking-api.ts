@@ -6,6 +6,7 @@ import { APIKeyClient } from "./apikey-client";
 import { TrackingClient } from "./tracking-client";
 import { UserClient } from "./user-client";
 import { AnalyticsClient } from "./analytics-client";
+import { TrackerEnum } from "./tracker.enum";
 
 export class TrackingAPI {
   public customers: CustomerClient;
@@ -128,3 +129,4 @@ export { APIKeyClient } from "./apikey-client";
 export { TrackingClient } from "./tracking-client";
 export { UserClient } from "./user-client";
 export { AnalyticsClient } from "./analytics-client";
+export { TrackerEnum } from "./tracker.enum";
