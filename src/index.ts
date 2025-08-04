@@ -151,6 +151,7 @@ export { APIKeyClient } from "./apikey-client";
 export { TrackingClient } from "./tracking-client";
 export { UserClient } from "./user-client";
 export { AnalyticsClient } from "./analytics-client";
+export { TrackerEnum } from "./tracker.enum";
 
 // Export all types
 export * from "./types";
