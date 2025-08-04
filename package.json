@@ -2,12 +2,12 @@
   "name": "tracker-api",
   "version": "2.0.5",
   "description": "A comprehensive JavaScript/TypeScript library for user behavior tracking and analytics",
-  "main": "index.js",
-  "types": "lib/index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "clean": "rimraf lib",
+    "clean": "rimraf dist",
     "prepare": "npm run clean && npm run build",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -44,11 +44,9 @@
     "axios": "^1.0.0"
   },
   "files": [
-    "lib/",
+    "dist/",
     "src/",
     "examples/",
-    "index.js",
-    "tracking-api-new.js",
     "*.d.ts",
     "README.md",
     "README-NEW.md",
@@ -67,9 +65,9 @@
   },
   "exports": {
     ".": {
-      "types": "./lib/index.d.ts",
-      "require": "./index.js",
-      "import": "./lib/index.js"
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.js"
     },
     "./package.json": "./package.json"
   },
