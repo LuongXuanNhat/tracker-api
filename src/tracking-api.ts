@@ -65,16 +65,14 @@ export class TrackingAPI {
   }
 
   async trackPageView(
-    visitorId: string,
     pageUrl: string,
     sessionId?: string,
     metadata?: Record<string, any>
   ) {
-    return this.tracking.trackPageView(visitorId, pageUrl, sessionId, metadata);
+    return this.tracking.trackPageView(pageUrl, sessionId, metadata);
   }
 
   async trackClick(
-    visitorId: string,
     elementType: string,
     pageUrl: string,
     elementId?: string,
@@ -82,7 +80,6 @@ export class TrackingAPI {
     metadata?: Record<string, any>
   ) {
     return this.tracking.trackClick(
-      visitorId,
       elementType,
       pageUrl,
       elementId,
@@ -92,14 +89,12 @@ export class TrackingAPI {
   }
 
   async trackScroll(
-    visitorId: string,
     pageUrl: string,
     scrollPercentage: number,
     sessionId?: string,
     metadata?: Record<string, any>
   ) {
     return this.tracking.trackScroll(
-      visitorId,
       pageUrl,
       scrollPercentage,
       sessionId,
@@ -109,14 +104,12 @@ export class TrackingAPI {
 
   async trackCustomEvent(
     eventType: string,
-    visitorId: string,
     pageUrl: string,
     sessionId?: string,
     metadata?: Record<string, any>
   ) {
     return this.tracking.trackCustomEvent(
       eventType,
-      visitorId,
       pageUrl,
       sessionId,
       metadata

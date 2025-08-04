@@ -249,7 +249,6 @@ export class TrackingClient extends BaseClient {
 
   // Convenience methods for specific event types
   async trackPageView(
-    visitorId: string,
     pageUrl: string,
     sessionId?: string,
     metadata?: Record<string, any>
@@ -258,15 +257,14 @@ export class TrackingClient extends BaseClient {
       event_type: "pageview",
       event_name: "page_view",
       page_url: pageUrl,
-      visitor_id: visitorId || this.visitorId || uuidv4(),
-      user_id: visitorId, // Can be same as visitor_id or null for anonymous
+      visitor_id: this.visitorId || uuidv4(),
+      user_id: this.visitorId || uuidv4(),
       session_id: sessionId,
       metadata,
     });
   }
 
   async trackClick(
-    visitorId: string,
     elementType: string,
     pageUrl: string,
     elementId?: string,
@@ -277,8 +275,8 @@ export class TrackingClient extends BaseClient {
       event_type: "click",
       event_name: `${elementType}_click`,
       page_url: pageUrl,
-      visitor_id: visitorId || this.visitorId || uuidv4(),
-      user_id: visitorId,
+      visitor_id: this.visitorId || uuidv4(),
+      user_id: this.visitorId || uuidv4(),
       session_id: sessionId,
       element_type: elementType,
       element_id: elementId,
@@ -287,7 +285,6 @@ export class TrackingClient extends BaseClient {
   }
 
   async trackScroll(
-    visitorId: string,
     pageUrl: string,
     scrollPercentage: number,
     sessionId?: string,
@@ -297,8 +294,8 @@ export class TrackingClient extends BaseClient {
       event_type: "scroll",
       event_name: "page_scroll",
       page_url: pageUrl,
-      visitor_id: visitorId || this.visitorId || uuidv4(),
-      user_id: visitorId,
+      visitor_id: this.visitorId || uuidv4(),
+      user_id: this.visitorId || uuidv4(),
       session_id: sessionId,
       properties: {
         scroll_percentage: scrollPercentage.toString(),
@@ -312,7 +309,6 @@ export class TrackingClient extends BaseClient {
 
   async trackCustomEvent(
     eventType: string,
-    visitorId: string,
     pageUrl: string,
     sessionId?: string,
     metadata?: Record<string, any>
@@ -321,8 +317,8 @@ export class TrackingClient extends BaseClient {
       event_type: eventType,
       event_name: eventType,
       page_url: pageUrl,
-      visitor_id: visitorId || this.visitorId || uuidv4(),
-      user_id: visitorId,
+      visitor_id: this.visitorId || uuidv4(),
+      user_id: this.visitorId || uuidv4(),
       session_id: sessionId,
       metadata,
     });
