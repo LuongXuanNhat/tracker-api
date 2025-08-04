@@ -66,21 +66,21 @@ export async function trackBatch(
  * Track page view event using global tracker
  */
 export async function trackPageView(
-  userId: string,
+  visitorId: string,
   pageUrl: string,
   sessionId?: string,
   metadata?: Record<string, any>
 ): Promise<TrackingResponse | null> {
   const tracker = getTracker();
   if (!tracker) return null;
-  return await tracker.trackPageView(userId, pageUrl, sessionId, metadata);
+  return await tracker.trackPageView(visitorId, pageUrl, sessionId, metadata);
 }
 
 /**
  * Track click event using global tracker
  */
 export async function trackClick(
-  userId: string,
+  visitorId: string,
   elementType: string,
   pageUrl: string,
   elementId?: string,
@@ -90,7 +90,7 @@ export async function trackClick(
   const tracker = getTracker();
   if (!tracker) return null;
   return await tracker.trackClick(
-    userId,
+    visitorId,
     elementType,
     pageUrl,
     elementId,
@@ -103,7 +103,7 @@ export async function trackClick(
  * Track scroll event using global tracker
  */
 export async function trackScroll(
-  userId: string,
+  visitorId: string,
   pageUrl: string,
   scrollPercentage: number,
   sessionId?: string,
@@ -112,7 +112,7 @@ export async function trackScroll(
   const tracker = getTracker();
   if (!tracker) return null;
   return await tracker.trackScroll(
-    userId,
+    visitorId,
     pageUrl,
     scrollPercentage,
     sessionId,
@@ -125,7 +125,7 @@ export async function trackScroll(
  */
 export async function trackCustomEvent(
   eventType: string,
-  userId: string,
+  visitorId: string,
   pageUrl: string,
   sessionId?: string,
   metadata?: Record<string, any>
@@ -134,7 +134,7 @@ export async function trackCustomEvent(
   if (!tracker) return null;
   return await tracker.trackCustomEvent(
     eventType,
-    userId,
+    visitorId,
     pageUrl,
     sessionId,
     metadata

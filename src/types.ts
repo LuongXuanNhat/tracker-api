@@ -58,7 +58,7 @@ export interface Website {
   id: string;
   name: string;
   url: string;
-  type: 'development' | 'staging' | 'production';
+  type: "development" | "staging" | "production";
   description?: string;
   customer_id: string;
   created_at: string;
@@ -68,7 +68,7 @@ export interface Website {
 export interface WebsiteCreate {
   name: string;
   url: string;
-  type: 'development' | 'staging' | 'production';
+  type: "development" | "staging" | "production";
   description?: string;
 }
 
@@ -91,7 +91,7 @@ export interface APIKey {
   id: string;
   api_key: string;
   website_id: string;
-  type: 'development' | 'staging' | 'production';
+  type: "development" | "staging" | "production";
   description?: string;
   is_active: boolean;
   last_used_at?: string;
@@ -100,7 +100,7 @@ export interface APIKey {
 
 export interface APIKeyCreate {
   website_id: string;
-  type: 'development' | 'staging' | 'production';
+  type: "development" | "staging" | "production";
   description?: string;
 }
 
@@ -111,15 +111,50 @@ export interface APIKeyUpdate {
 
 // Event Tracking Types
 export interface EventData {
-  event_type: string;
-  element_type?: string;
-  page_url: string;
-  element_id?: string;
-  user_id: string;
-  session_id?: string;
-  user_agent?: string;
-  metadata?: Record<string, any>;
-  timestamp?: number;
+  // Required fields
+  event_type: string; // Bắt buộc - pageview, click, scroll, form_submit, purchase, etc.
+  event_name: string; // Bắt buộc - specific event name
+  page_url: string; // Bắt buộc
+  visitor_id: string; // Bắt buộc - UUID for anonymous/identified users
+
+  // Optional core fields
+  website_id?: string; // UUID
+  event_date?: string; // YYYY-MM-DD format
+  event_time?: string; // TIMESTAMP
+  event_id?: string; // UUID - will be generated if not provided
+  user_id?: string | null; // UUID - null for anonymous users
+  session_id?: string; // UUID
+
+  // Page and element related
+  page_title?: string;
+  element_selector?: string;
+  element_text?: string;
+  element_type?: string; // For backward compatibility
+  element_id?: string; // For backward compatibility
+
+  // Device and browser info
+  device_type?: string; // desktop, mobile, tablet
+  browser?: string;
+  os?: string;
+  user_agent?: string; // For backward compatibility
+
+  // Location info
+  ip_address?: string;
+  country?: string;
+  city?: string;
+
+  // Marketing attribution
+  referrer?: string;
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+
+  // Custom properties
+  properties?: Record<string, string>; // MAP<TEXT, TEXT> as per DB schema
+  metadata?: Record<string, any>; // For backward compatibility
+
+  // Timestamp
+  timestamp?: number; // For backward compatibility
 }
 
 export interface BatchEventData {
