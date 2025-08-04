@@ -67,7 +67,7 @@ export class TrackingClient extends BaseClient {
       throw new Error("page_url is required");
     }
     if (!eventData.visitor_id) {
-      throw new Error("visitor_id is required");
+      eventData.visitor_id = this.visitorId || uuidv4();
     }
 
     // Set default visitor_id if not provided (for backward compatibility)

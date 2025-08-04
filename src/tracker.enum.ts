@@ -46,6 +46,14 @@ export namespace TrackerEnum {
     product_detail = "Chi tiết sản phẩm",
     search_results = "Kết quả tìm kiếm",
     contact = "Liên hệ",
+    service = "Dịch vụ",
+    about = "Giới thiệu",
+    terms = "Điều khoản sử dụng",
+    privacy = "Chính sách bảo mật",
+    faq = "Câu hỏi thường gặp",
+    review = "Đánh giá",
+    detail = "Chi tiết",
+    settings = "Cài đặt",
   }
 
   export enum ElementSelector {
