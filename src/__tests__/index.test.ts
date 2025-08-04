@@ -126,13 +126,7 @@ describe("Tracker API Tests", () => {
   describe("trackClick()", () => {
     it("should track click event", async () => {
       init({ apiKey: "test-key" });
-      const response = await trackClick(
-        "button",
-        "/test",
-        "btn-1",
-        "session123",
-        { customData: "test" }
-      );
+      const response = await trackClick({ page_url: "test" });
 
       expect(global.fetch).toHaveBeenCalled();
       expect(response).toEqual({ success: true });
@@ -140,14 +134,7 @@ describe("Tracker API Tests", () => {
 
     it("should track click event without session ID", async () => {
       init({ apiKey: "test-key" });
-      const response = await trackClick(
-        // Changed from "user1" to "123e4567-e89b-12d3-a456-426614174000"
-        "button",
-        "/test",
-        "btn-1",
-        undefined,
-        { customData: "test" }
-      );
+      const response = await trackClick({ page_url: "test" });
 
       expect(global.fetch).toHaveBeenCalled();
       expect(response).toEqual({ success: true });
@@ -157,10 +144,7 @@ describe("Tracker API Tests", () => {
   describe("trackPageView()", () => {
     it("should track page view event", async () => {
       init({ apiKey: "test-key" });
-      const response = await trackPageView("/test", "session123", {
-        title: "Test Page",
-      });
-
+      const response = await trackPageView({ page_url: "test" });
       expect(global.fetch).toHaveBeenCalled();
       expect(response).toEqual({ success: true });
     });
@@ -184,9 +168,7 @@ describe("Tracker API Tests", () => {
   describe("trackScroll()", () => {
     it("should track scroll event", async () => {
       init({ apiKey: "test-key" });
-      const response = await trackScroll("/test", 50, "session123", {
-        scrollDirection: "down",
-      });
+      const response = await trackScroll({ page_url: "test" });
 
       expect(global.fetch).toHaveBeenCalled();
       expect(response).toEqual({ success: true });
