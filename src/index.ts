@@ -1,6 +1,6 @@
 // index.ts - Main entry point for the tracking library
-import { TrackingAPI } from './tracking-api';
-import { TrackerOptions, EventData, TrackingResponse } from './types';
+import { TrackingAPI } from "./tracking-api";
+import { TrackerOptions, EventData, TrackingResponse } from "./types";
 
 // Singleton instance for global usage
 let globalTracker: TrackingAPI | null = null;
@@ -21,8 +21,9 @@ export function init(options: TrackerOptions = {}): TrackingAPI {
  */
 export function getTracker(): TrackingAPI | null {
   if (!globalTracker) {
-    console.warn('Tracker not initialized. Call init() first.');
-    return null;
+    globalTracker = new TrackingAPI({
+      apiKey: process.env.NEXT_PUBLIC_TRACKING_API_KEY,
+    });
   }
   return globalTracker;
 }
@@ -41,7 +42,10 @@ export function createTracker(options: TrackerOptions = {}): TrackingAPI {
 /**
  * Track a custom event using global tracker
  */
-export async function track(eventData: EventData, immediate: boolean = false): Promise<TrackingResponse | null> {
+export async function track(
+  eventData: EventData,
+  immediate: boolean = false
+): Promise<TrackingResponse | null> {
   const tracker = getTracker();
   if (!tracker) return null;
   return await tracker.track(eventData, immediate);
@@ -50,7 +54,9 @@ export async function track(eventData: EventData, immediate: boolean = false): P
 /**
  * Track multiple events at once using global tracker
  */
-export async function trackBatch(events: EventData[]): Promise<TrackingResponse | null> {
+export async function trackBatch(
+  events: EventData[]
+): Promise<TrackingResponse | null> {
   const tracker = getTracker();
   if (!tracker) return null;
   return await tracker.trackBatch(events);
@@ -83,7 +89,14 @@ export async function trackClick(
 ): Promise<TrackingResponse | null> {
   const tracker = getTracker();
   if (!tracker) return null;
-  return await tracker.trackClick(userId, elementType, pageUrl, elementId, sessionId, metadata);
+  return await tracker.trackClick(
+    userId,
+    elementType,
+    pageUrl,
+    elementId,
+    sessionId,
+    metadata
+  );
 }
 
 /**
@@ -98,7 +111,13 @@ export async function trackScroll(
 ): Promise<TrackingResponse | null> {
   const tracker = getTracker();
   if (!tracker) return null;
-  return await tracker.trackScroll(userId, pageUrl, scrollPercentage, sessionId, metadata);
+  return await tracker.trackScroll(
+    userId,
+    pageUrl,
+    scrollPercentage,
+    sessionId,
+    metadata
+  );
 }
 
 /**
@@ -113,7 +132,13 @@ export async function trackCustomEvent(
 ): Promise<TrackingResponse | null> {
   const tracker = getTracker();
   if (!tracker) return null;
-  return await tracker.trackCustomEvent(eventType, userId, pageUrl, sessionId, metadata);
+  return await tracker.trackCustomEvent(
+    eventType,
+    userId,
+    pageUrl,
+    sessionId,
+    metadata
+  );
 }
 
 /**
@@ -126,13 +151,13 @@ export async function flush(): Promise<TrackingResponse | null> {
 }
 
 // Export main classes and types
-export { TrackingAPI } from './tracking-api';
-export { CustomerClient } from './customer-client';
-export { WebsiteClient } from './website-client';
-export { APIKeyClient } from './apikey-client';
-export { TrackingClient } from './tracking-client';
-export { UserClient } from './user-client';
-export { AnalyticsClient } from './analytics-client';
+export { TrackingAPI } from "./tracking-api";
+export { CustomerClient } from "./customer-client";
+export { WebsiteClient } from "./website-client";
+export { APIKeyClient } from "./apikey-client";
+export { TrackingClient } from "./tracking-client";
+export { UserClient } from "./user-client";
+export { AnalyticsClient } from "./analytics-client";
 
 // Export all types
-export * from './types';
+export * from "./types";
