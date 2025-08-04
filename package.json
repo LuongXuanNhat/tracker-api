@@ -1,6 +1,6 @@
 {
   "name": "tracker-api",
-  "version": "2.0.9",
+  "version": "2.0.10",
   "description": "A comprehensive JavaScript/TypeScript library for user behavior tracking and analytics",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
