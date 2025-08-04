@@ -55,16 +55,12 @@ async function trackWithConvenienceMethods() {
   const sessionId = "session-789";
 
   // Track page view
-  await tracker.trackPageView(
-    visitorId,
-    "https://example.com/home",
-    sessionId,
-    { page_title: "Home Page" }
-  );
+  await tracker.trackPageView("https://example.com/home", sessionId, {
+    page_title: "Home Page",
+  });
 
   // Track button click
   await tracker.trackClick(
-    visitorId,
     "button",
     "https://example.com/home",
     "cta-button",
@@ -73,18 +69,14 @@ async function trackWithConvenienceMethods() {
   );
 
   // Track scroll event
-  await tracker.trackScroll(
-    visitorId,
-    "https://example.com/article",
-    75,
-    sessionId,
-    { article_id: "123" }
-  );
+  await tracker.trackScroll("https://example.com/article", 75, sessionId, {
+    article_id: "123",
+  });
 
   // Track custom event
   await tracker.trackCustomEvent(
     "form_submit",
-    visitorId,
+
     "https://example.com/contact",
     sessionId,
     { form_name: "contact-form" }
