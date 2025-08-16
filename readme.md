@@ -103,7 +103,7 @@ await trackClick({
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="node_modules/tracker-api/dist/index.js"></script>
+    <script src="node_modules/tracker-api/browser/tracker-api.js"></script>
   </head>
   <body>
     <script>
