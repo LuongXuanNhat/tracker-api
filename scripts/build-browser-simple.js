@@ -237,7 +237,7 @@ const browserCode = `
       };
 
       try {
-        const response = await makeRequest('POST', url, { events }, headers);
+        const response = await makeRequest('POST', url, events, headers);
         if (this.debug) {
           console.log('TrackerAPI: Batch sent successfully', response);
         }
