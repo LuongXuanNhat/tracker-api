@@ -2,8 +2,10 @@
   "name": "tracker-api",
   "version": "2.0.10",
   "description": "A comprehensive JavaScript/TypeScript library for user behavior tracking and analytics",
-  "main": "dist/index.js",
+  "main": "lib/index.js",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "browser": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",
@@ -13,7 +15,8 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:ts": "node -r ts-node/register examples/usage-examples.ts",
-    "test:js": "node examples/javascript-examples.js",
+    "test:js": "node examples/javascript-usage.js",
+    "test:browser": "echo \"Open examples/browser-demo.html in your browser\"",
     "dev": "npm run build:watch",
     "lint": "tsc --noEmit"
   },
@@ -45,6 +48,7 @@
   },
   "files": [
     "dist/",
+    "lib/",
     "src/",
     "examples/",
     "*.d.ts",
@@ -65,6 +69,15 @@
   },
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./lib/index.js",
+      "import": "./dist/index.js",
+      "browser": "./dist/index.js"
+    },
+    "./lib": {
+      "require": "./lib/index.js"
+    },
+    "./dist": {
       "types": "./dist/index.d.ts",
       "require": "./dist/index.js",
       "import": "./dist/index.js"

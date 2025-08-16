@@ -12,7 +12,26 @@ let globalTracker: TrackingAPI | null = null;
  * @returns Tracker instance
  */
 export function init(options: TrackerOptions = {}): TrackingAPI {
-  globalTracker = new TrackingAPI(options);
+  // Support for direct API configuration (for JavaScript environments)
+  const mergedOptions: TrackerOptions = {
+    ...options,
+    // Use provided apiKey or trackingApiKey first, then fallback to env
+    apiKey:
+      options.apiKey ||
+      options.trackingApiKey ||
+      (typeof process !== "undefined" && process.env
+        ? process.env.NEXT_PUBLIC_TRACKING_API_KEY
+        : undefined),
+    // Use provided baseUrl or apiUrl first, then fallback to env
+    baseUrl:
+      options.baseUrl ||
+      options.apiUrl ||
+      (typeof process !== "undefined" && process.env
+        ? process.env.NEXT_PUBLIC_API_URL
+        : undefined),
+  };
+
+  globalTracker = new TrackingAPI(mergedOptions);
   return globalTracker;
 }
 
@@ -22,8 +41,19 @@ export function init(options: TrackerOptions = {}): TrackingAPI {
  */
 export function getTracker(): TrackingAPI | null {
   if (!globalTracker) {
+    // Auto-initialize with environment variables if available
+    const defaultApiKey =
+      typeof process !== "undefined" && process.env
+        ? process.env.NEXT_PUBLIC_TRACKING_API_KEY
+        : undefined;
+    const defaultApiUrl =
+      typeof process !== "undefined" && process.env
+        ? process.env.NEXT_PUBLIC_API_URL
+        : undefined;
+
     globalTracker = new TrackingAPI({
-      apiKey: process.env.NEXT_PUBLIC_TRACKING_API_KEY,
+      apiKey: defaultApiKey,
+      baseUrl: defaultApiUrl,
     });
   }
   return globalTracker;

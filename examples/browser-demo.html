@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracker API - Browser Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        button {
+            background: #007cba;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        button:hover {
+            background: #005a87;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .output {
+            background: #333;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin-top: 10px;
+            min-height: 100px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🎯 Tracker API - Browser Demo</h1>
+
+    <div class="container">
+        <h2>📊 Configuration</h2>
+        <p>Configure your tracker API settings:</p>
+        <label>API Key:</label>
+        <input type="text" id="apiKey" placeholder="your-api-key" value="demo-api-key">
+
+        <label>API URL:</label>
+        <input type="text" id="apiUrl" placeholder="https://your-api.com/api" value="http://localhost:3002/api">
+
+        <button onclick="initializeTracker()">🚀 Initialize Tracker</button>
+        <div id="initStatus"></div>
+    </div>
+
+    <div class="container">
+        <h2>📄 Page Tracking</h2>
+        <button onclick="trackCurrentPage()">📝 Track Page View</button>
+        <button onclick="trackCustomPage()">🎯 Track Custom Page</button>
+    </div>
+
+    <div class="container">
+        <h2>🖱️ Interaction Tracking</h2>
+        <button id="tracked-button" onclick="trackButtonClick(this)">🔘 Click Me (Tracked)</button>
+        <button onclick="trackLinkClick()">🔗 Track Link Click</button>
+        <button onclick="trackHoverEvent()">👆 Track Hover Event</button>
+    </div>
+
+    <div class="container">
+        <h2>📋 Form Tracking</h2>
+        <form id="demo-form" onsubmit="trackFormSubmission(event)">
+            <label>Name:</label>
+            <input type="text" id="userName" placeholder="Your name" onchange="trackInputChange(this)">
+
+            <label>Email:</label>
+            <input type="email" id="userEmail" placeholder="your@email.com" onchange="trackInputChange(this)">
+
+            <label>Message:</label>
+            <textarea id="userMessage" placeholder="Your message..." rows="3"
+                onchange="trackInputChange(this)"></textarea>
+
+            <button type="submit">📧 Submit Form (Tracked)</button>
+        </form>
+    </div>
+
+    <div class="container">
+        <h2>🛒 E-commerce Tracking</h2>
+        <button onclick="trackAddToCart()">🛍️ Add to Cart</button>
+        <button onclick="trackPurchase()">💳 Track Purchase</button>
+        <button onclick="trackProductView()">👀 View Product</button>
+    </div>
+
+    <div class="container">
+        <h2>👤 User Actions</h2>
+        <button onclick="trackLogin()">🔐 Track Login</button>
+        <button onclick="trackSignup()">✨ Track Signup</button>
+        <button onclick="trackSearch()">🔍 Track Search</button>
+    </div>
+
+    <div class="container">
+        <h2>📊 Batch Operations</h2>
+        <button onclick="trackMultipleEvents()">📦 Track Multiple Events</button>
+        <button onclick="flushEvents()">🚀 Flush Pending Events</button>
+    </div>
+
+    <div class="container">
+        <h2>📋 Debug Output</h2>
+        <button onclick="clearOutput()">🧹 Clear Output</button>
+        <div id="output" class="output">Ready to track events...\n</div>
+    </div>
+
+    <!-- Include the tracker API -->
+    <script src="../dist/index.js"></script>
+
+    <script>
+        let tracker = null;
+        const output = document.getElementById('output');
+
+        function log(message)
+        {
+            const timestamp = new Date().toISOString();
+            output.innerHTML += `[${timestamp}] ${message}\n`;
+            output.scrollTop = output.scrollHeight;
+            console.log(message);
+        }
+
+        function clearOutput()
+        {
+            output.innerHTML = 'Output cleared...\n';
+        }
+
+        // Initialize tracker
+        function initializeTracker()
+        {
+            try
+            {
+                const apiKey = document.getElementById('apiKey').value;
+                const apiUrl = document.getElementById('apiUrl').value;
+
+                if (!apiKey || !apiUrl)
+                {
+                    alert('Please provide both API Key and API URL');
+                    return;
+                }
+
+                // Initialize with direct configuration
+                tracker = TrackerAPI.init({
+                    apiKey: apiKey,
+                    baseUrl: apiUrl,
+                    debug: true,
+                    timeout: 5000,
+                    retryAttempts: 3
+                });
+
+                document.getElementById('initStatus').innerHTML = '✅ Tracker initialized successfully!';
+                log(`✅ Tracker initialized with API: ${apiUrl}`);
+            } catch (error)
+            {
+                document.getElementById('initStatus').innerHTML = '❌ Failed to initialize tracker';
+                log(`❌ Error initializing tracker: ${error.message}`);
+            }
+        }
+
+        // Page tracking functions
+        async function trackCurrentPage()
+        {
+            try
+            {
+                await TrackerAPI.trackPageView({
+                    page_url: window.location.href,
+                    page_title: document.title,
+                    properties: {
+                        referrer: document.referrer,
+                        user_agent: navigator.userAgent.substring(0, 50) + '...'
+                    }
+                });
+                log('📄 Current page view tracked');
+            } catch (error)
+            {
+                log(`❌ Error tracking page view: ${error.message}`);
+            }
+        }
+
+        async function trackCustomPage()
+        {
+            try
+            {
+                await TrackerAPI.trackPageView({
+                    page_url: 'https://demo.example.com/custom-page',
+                    page_title: 'Custom Demo Page',
+                    properties: {
+                        section: 'demo',
+                        campaign: 'browser-test'
+                    }
+                });
+                log('🎯 Custom page view tracked');
+            } catch (error)
+            {
+                log(`❌ Error tracking custom page: ${error.message}`);
+            }
+        }
+
+        // Interaction tracking
+        async function trackButtonClick(button)
+        {
+            try
+            {
+                await TrackerAPI.trackClick({
+                    page_url: window.location.href,
+                    element_selector: '#tracked-button',
+                    element_text: button.textContent,
+                    element_id: button.id,
+                    properties: {
+                        click_time: new Date().toISOString(),
+                        section: 'interaction-demo'
+                    }
+                });
+                log('🔘 Button click tracked');
+            } catch (error)
+            {
+                log(`❌ Error tracking button click: ${error.message}`);
+            }
+        }
+
+        async function trackLinkClick()
+        {
+            try
+            {
+                await TrackerAPI.trackLinkClick({
+                    page_url: window.location.href,
+                    element_selector: 'a.demo-link',
+                    properties: {
+                        link_type: 'internal',
+                        destination: 'https://example.com'
+                    }
+                });
+                log('🔗 Link click tracked');
+            } catch (error)
+            {
+                log(`❌ Error tracking link click: ${error.message}`);
+            }
+        }
+
+        async function trackHoverEvent()
+        {
+            try
+            {
+                await TrackerAPI.trackHover({
+                    page_url: window.location.href,
+                    element_selector: '.hover-element',
+                    properties: {
+                        hover_duration: '2.5s'
+                    }
+                });
+                log('👆 Hover event tracked');
+            } catch (error)
+            {
+                log(`❌ Error tracking hover: ${error.message}`);
+            }
+        }
+
+        // Form tracking
+        async function trackInputChange(input)
+        {
+            try
+            {
+                await TrackerAPI.trackChange({
+                    page_url: window.location.href,
+                    element_selector: `#${input.id}`,
+                    properties: {
+                        field_name: input.id,
+                        field_type: input.type,
+                        value_length: input.value.length
+                    }
+                });
+                log(`📝 Input change tracked: ${input.id}`);
+            } catch (error)
+            {
+                log(`❌ Error tracking input change: ${error.message}`);
+            }
+        }
+
+        async function trackFormSubmission(event)
+        {
+            event.preventDefault();
+            try
+            {
+                await TrackerAPI.trackSubmit({
+                    page_url: window.location.href,
+                    element_selector: '#demo-form',
+                    properties: {
+                        form_name: 'demo-form',
+                        fields_filled: 3,
+                        submission_time: new Date().toISOString()
+                    }
+                });
+                log('📧 Form submission tracked');
+
+                // Reset form after tracking
+                document.getElementById('demo-form').reset();
+            } catch (error)
+            {
+                log(`❌ Error tracking form submission: ${error.message}`);
+            }
+        }
+
+        // E-commerce tracking
+        async function trackAddToCart()
+        {
+            try
+            {
+                await TrackerAPI.trackAddToCart({
+                    page_url: window.location.href,
+                    properties: {
+                        product_id: 'DEMO-123',
+                        product_name: 'Demo Product',
+                        price: '29.99',
+                        currency: 'USD',
+                        quantity: 1
+                    }
+                });
+                log('🛍️ Add to cart tracked');
+            } catch (error)
+            {
+                log(`❌ Error tracking add to cart: ${error.message}`);
+            }
+        }
+
+        async function trackPurchase()
+        {
+            try
+            {
+                await TrackerAPI.trackPurchase({
+                    page_url: window.location.href,
+                    properties: {
+                        order_id: 'ORDER-' + Date.now(),
+                        total_amount: '89.97',
+                        currency: 'USD',
+                        payment_method: 'credit_card',
+                        items_count: 3
+                    }
+                });
+                log('💳 Purchase tracked');
+            } catch (error)
+            {
+                log(`❌ Error tracking purchase: ${error.message}`);
+            }
+        }
+
+        async function trackProductView()
+        {
+            try
+            {
+                await TrackerAPI.trackViewProduct({
+                    page_url: window.location.href,
+                    properties: {
+                        product_id: 'DEMO-456',
+                        product_name: 'Premium Demo Item',
+                        category: 'electronics',
+                        price: '199.99',
+                        currency: 'USD'
+                    }
+                });
+                log('👀 Product view tracked');
+            } catch (error)
+            {
+                log(`❌ Error tracking product view: ${error.message}`);
+            }
+        }
+
+        // User actions
+        async function trackLogin()
+        {
+            try
+            {
+                await TrackerAPI.trackLoginFormSubmit({
+                    page_url: window.location.href,
+                    properties: {
+                        login_method: 'email',
+                        user_type: 'demo'
+                    }
+                });
+                log('🔐 Login tracked');
+            } catch (error)
+            {
+                log(`❌ Error tracking login: ${error.message}`);
+            }
+        }
+
+        async function trackSignup()
+        {
+            try
+            {
+                await TrackerAPI.trackSignupFormSubmit({
+                    page_url: window.location.href,
+                    properties: {
+                        signup_method: 'email',
+                        referral_source: 'demo'
+                    }
+                });
+                log('✨ Signup tracked');
+            } catch (error)
+            {
+                log(`❌ Error tracking signup: ${error.message}`);
+            }
+        }
+
+        async function trackSearch()
+        {
+            try
+            {
+                await TrackerAPI.trackSearchQuerySubmit({
+                    page_url: window.location.href,
+                    properties: {
+                        search_query: 'demo products',
+                        search_results_count: 42,
+                        search_category: 'all'
+                    }
+                });
+                log('🔍 Search tracked');
+            } catch (error)
+            {
+                log(`❌ Error tracking search: ${error.message}`);
+            }
+        }
+
+        // Batch operations
+        async function trackMultipleEvents()
+        {
+            try
+            {
+                const events = [
+                    {
+                        event_type: 'pageview',
+                        event_name: 'page_view',
+                        page_url: window.location.href,
+                        page_title: 'Batch Event 1',
+                        event_date: new Date().toISOString().split('T')[0],
+                        event_time: new Date().toISOString(),
+                        visitor_id: 'demo-visitor'
+                    },
+                    {
+                        event_type: 'click',
+                        event_name: 'button_click',
+                        page_url: window.location.href,
+                        element_selector: '.batch-button',
+                        event_date: new Date().toISOString().split('T')[0],
+                        event_time: new Date().toISOString(),
+                        visitor_id: 'demo-visitor'
+                    }
+                ];
+
+                await TrackerAPI.trackBatch(events);
+                log('📦 Multiple events tracked in batch');
+            } catch (error)
+            {
+                log(`❌ Error tracking batch events: ${error.message}`);
+            }
+        }
+
+        async function flushEvents()
+        {
+            try
+            {
+                await TrackerAPI.flush();
+                log('🚀 Pending events flushed');
+            } catch (error)
+            {
+                log(`❌ Error flushing events: ${error.message}`);
+            }
+        }
+
+        // Auto-initialize tracker with demo values
+        window.addEventListener('load', function ()
+        {
+            log('🌐 Browser demo loaded. Ready to track events!');
+            log('💡 Tip: Initialize the tracker first, then try the various tracking functions.');
+        });
+    </script>
+</body>
+
+</html>

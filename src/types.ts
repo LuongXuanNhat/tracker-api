@@ -10,6 +10,9 @@ export interface TrackerOptions {
   batchSize?: number;
   batchTimeout?: number;
   debug?: boolean;
+  // Environment variables for JavaScript usage
+  apiUrl?: string;
+  trackingApiKey?: string;
 }
 
 export interface APIResponse<T = any> {
