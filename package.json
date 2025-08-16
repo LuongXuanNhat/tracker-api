@@ -18,7 +18,7 @@
     "test:coverage": "jest --coverage",
     "test:ts": "node -r ts-node/register examples/usage-examples.ts",
     "test:js": "node examples/javascript-usage.js",
-    "test:browser": "echo \"Open examples/browser-demo.html in your browser\"",
+    "test:browser": "echo \"Open examples/test-browser.html in your browser for simple test, or examples/browser-demo.html for full demo\"",
     "dev": "npm run build:watch",
     "lint": "tsc --noEmit"
   },

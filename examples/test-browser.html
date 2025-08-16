@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracker API Test</title>
+</head>
+
+<body>
+    <h1>Tracker API Test</h1>
+    <button id="test-btn">Test Tracker</button>
+
+    <div id="output" style="background: #f0f0f0; padding: 10px; margin: 10px 0;">
+        Output will appear here...
+    </div>
+
+    <!-- Include the browser version -->
+    <script src="../browser/tracker-api.js"></script>
+
+    <script>
+        console.log('TrackerAPI available:', typeof TrackerAPI);
+        console.log('TrackerAPI object:', TrackerAPI);
+
+        document.getElementById('output').innerHTML = 'TrackerAPI loaded: ' + (typeof TrackerAPI !== 'undefined');
+
+        // Test initialization
+        try
+        {
+            TrackerAPI.init({
+                apiKey: 'test-api-key',
+                baseUrl: 'http://localhost:3002/api',
+                debug: true
+            });
+
+            document.getElementById('output').innerHTML += '<br>✅ Tracker initialized successfully!';
+
+            // Test tracking
+            document.getElementById('test-btn').addEventListener('click', async function ()
+            {
+                try
+                {
+                    await TrackerAPI.trackClick({
+                        page_url: window.location.href,
+                        element_selector: '#test-btn',
+                        element_text: 'Test Tracker'
+                    });
+                    document.getElementById('output').innerHTML += '<br>✅ Click event tracked!';
+                } catch (error)
+                {
+                    document.getElementById('output').innerHTML += '<br>❌ Error tracking click: ' + error.message;
+                }
+            });
+
+        } catch (error)
+        {
+            document.getElementById('output').innerHTML += '<br>❌ Error initializing: ' + error.message;
+        }
+    </script>
+</body>
+
+</html>

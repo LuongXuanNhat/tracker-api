@@ -579,14 +579,80 @@ npm run clean
 - 🟨 [JavaScript Examples](./examples/javascript-usage.js)
 - 🌐 [Browser Demo](./examples/browser-demo.html)
 
+## � Khắc phục lỗi thường gặp
+
+### Browser: "exports is not defined" hoặc "TrackerAPI is not defined"
+
+**Nguyên nhân**: Sử dụng sai file cho browser environment.
+
+**Giải pháp**:
+
+```html
+<!-- ❌ SAI - Không dùng file này cho browser -->
+<script src="node_modules/tracker-api/dist/index.js"></script>
+
+<!-- ✅ ĐÚNG - Dùng file browser -->
+<script src="node_modules/tracker-api/browser/tracker-api.js"></script>
+```
+
+**Hoặc build từ source**:
+
+```bash
+# 1. Build project trước
+npm run build
+
+# 2. Sử dụng file được tạo
+# browser/tracker-api.js sẽ có sẵn sau khi build
+```
+
+### JavaScript: "Cannot find module"
+
+**Giải pháp**:
+
+```javascript
+// ✅ Sử dụng đúng entry point cho Node.js
+const { init, trackPageView } = require("tracker-api");
+// Hoặc
+const { init, trackPageView } = require("tracker-api/lib");
+```
+
+### TypeScript: Type errors
+
+**Giải pháp**:
+
+```typescript
+// ✅ Import đúng types
+import { TrackerOptions, EventData } from "tracker-api";
+```
+
 ## 📞 Hỗ trợ
 
 Nếu bạn gặp vấn đề:
 
-1. Kiểm tra file examples phù hợp với ngôn ngữ bạn đang dùng
-2. Đảm bảo đã build project: `npm run build`
-3. Kiểm tra cấu hình API key và URL
-4. Xem debug output với `debug: true`
+1. **Kiểm tra build**: `npm run build`
+2. **Test với file examples**:
+   - TypeScript: `examples/usage-examples.ts`
+   - JavaScript: `examples/javascript-usage.js`
+   - Browser: `examples/test-browser.html`
+3. **Kiểm tra cấu hình** API key và URL
+4. **Enable debug**: `debug: true`
+5. **Kiểm tra console** cho error details
+
+## 📂 Cấu trúc project
+
+```
+tracker-api/
+├── src/                    # TypeScript source
+├── dist/                   # Compiled Node.js version
+├── browser/                # Browser-ready version
+├── lib/                    # JavaScript wrapper
+├── examples/               # Usage examples
+│   ├── usage-examples.ts   # TypeScript examples
+│   ├── javascript-usage.js # JavaScript examples
+│   ├── test-browser.html   # Simple browser test
+│   └── browser-demo.html   # Full interactive demo
+└── scripts/                # Build scripts
+```
 
 ## 📈 Sắp ra mắt
 

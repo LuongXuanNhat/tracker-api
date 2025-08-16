@@ -4,9 +4,14 @@ const path = require("path");
 
 // Read the compiled Node.js version
 const distPath = path.join(__dirname, "../dist/index.js");
-const browserPath = path.join(__dirname, "../browser/tracker-api.js");
+const browserDir = path.join(__dirname, "../browser");
+const browserPath = path.join(browserDir, "tracker-api.js");
 
 try {
+  // Create browser directory if it doesn't exist
+  if (!fs.existsSync(browserDir)) {
+    fs.mkdirSync(browserDir, { recursive: true });
+  }
   // Read the compiled code
   let compiledCode = fs.readFileSync(distPath, "utf8");
 
