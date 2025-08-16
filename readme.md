@@ -103,7 +103,7 @@ await trackClick({
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="node_modules/tracker-api/browser/tracker-api.js"></script>
+    <script src="node_modules/tracker-api/browser/tracker-api-bundle.js"></script>
   </head>
   <body>
     <script>
@@ -592,7 +592,7 @@ npm run clean
 <script src="node_modules/tracker-api/dist/index.js"></script>
 
 <!-- ✅ ĐÚNG - Dùng file browser -->
-<script src="node_modules/tracker-api/browser/tracker-api.js"></script>
+<script src="node_modules/tracker-api/browser/tracker-api-bundle.js"></script>
 ```
 
 **Hoặc build từ source**:
@@ -602,7 +602,7 @@ npm run clean
 npm run build
 
 # 2. Sử dụng file được tạo
-# browser/tracker-api.js sẽ có sẵn sau khi build
+# browser/tracker-api-bundle.js sẽ có sẵn sau khi build
 ```
 
 ### JavaScript: "Cannot find module"

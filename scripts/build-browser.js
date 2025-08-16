@@ -15,6 +15,16 @@ try {
   // Read the compiled code
   let compiledCode = fs.readFileSync(distPath, "utf8");
 
+  // Replace CommonJS require statements with inline imports
+  // This is a simple approach - for complex projects, consider using a bundler
+  compiledCode = compiledCode
+    // Remove require statements (they'll be undefined in browser)
+    .replace(/const\s+[\w_]+\s*=\s*require\([^)]+\);?\s*\n?/g, "")
+    .replace(/require\([^)]+\)/g, "{}")
+    // Replace exports.xxx = with module.exports.xxx =
+    .replace(/^Object\.defineProperty\(exports[^}]+}\);?\s*\n?/gm, "")
+    .replace(/exports\.__esModule\s*=\s*true;?\s*\n?/g, "");
+
   // Create browser-compatible wrapper
   const browserWrapper = `
 // Tracker API - Browser Version

@@ -5,11 +5,11 @@
   "main": "lib/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
-  "browser": "browser/tracker-api.js",
+  "browser": "browser/tracker-api-bundle.js",
   "scripts": {
     "build": "npm run build:node && npm run build:browser",
     "build:node": "tsc",
-    "build:browser": "node scripts/build-browser.js",
+    "build:browser": "node scripts/build-browser-new.js",
     "build:watch": "tsc --watch",
     "clean": "rimraf dist browser",
     "prepare": "npm run clean && npm run build",
@@ -87,7 +87,7 @@
       "import": "./dist/index.js"
     },
     "./browser": {
-      "browser": "./browser/tracker-api.js"
+      "browser": "./browser/tracker-api-bundle.js"
     },
     "./package.json": "./package.json"
   },
