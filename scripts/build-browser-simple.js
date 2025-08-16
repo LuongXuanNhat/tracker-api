@@ -211,7 +211,7 @@ const browserCode = `
     async sendEvent(eventData) {
       const url = \`\${this.baseUrl}/tracking/events\`;
       const headers = {
-        'Authorization': \`Bearer \${this.apiKey}\`,
+        'x-api-key': this.apiKey,
         'Content-Type': 'application/json'
       };
 
@@ -232,7 +232,7 @@ const browserCode = `
     async sendBatch(events) {
       const url = \`\${this.baseUrl}/tracking/events/batch\`;
       const headers = {
-        'Authorization': \`Bearer \${this.apiKey}\`,
+        'x-api-key': this.apiKey,
         'Content-Type': 'application/json'
       };
 
