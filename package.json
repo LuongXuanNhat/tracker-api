@@ -9,7 +9,7 @@
   "scripts": {
     "build": "npm run build:node && npm run build:browser",
     "build:node": "tsc",
-    "build:browser": "node scripts/build-browser-new.js",
+    "build:browser": "node scripts/build-browser-simple.js",
     "build:watch": "tsc --watch",
     "clean": "rimraf dist browser",
     "prepare": "npm run clean && npm run build",
@@ -18,7 +18,7 @@
     "test:coverage": "jest --coverage",
     "test:ts": "node -r ts-node/register examples/usage-examples.ts",
     "test:js": "node examples/javascript-usage.js",
-    "test:browser": "echo \"Open examples/test-browser.html in your browser for simple test, or examples/browser-demo.html for full demo\"",
+    "test:browser": "echo \"Open examples/quick-test.html for quick test, or examples/browser-demo.html for full demo\"",
     "dev": "npm run build:watch",
     "lint": "tsc --noEmit"
   },

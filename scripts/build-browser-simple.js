@@ -1,4 +1,17 @@
+// scripts/build-browser-simple.js - Simpler browser build
+const fs = require("fs");
+const path = require("path");
 
+// Create browser directory if it doesn't exist
+const browserDir = path.join(__dirname, "../browser");
+if (!fs.existsSync(browserDir)) {
+  fs.mkdirSync(browserDir, { recursive: true });
+}
+
+const browserBundlePath = path.join(browserDir, "tracker-api-bundle.js");
+
+// Create a simple, working browser bundle
+const browserCode = `
 // Tracker API - Browser Bundle (Simplified)
 (function(global) {
   'use strict';
@@ -196,9 +209,9 @@
     }
 
     async sendEvent(eventData) {
-      const url = `${this.baseUrl}/tracking/events`;
+      const url = \`\${this.baseUrl}/tracking/events\`;
       const headers = {
-        'Authorization': `Bearer ${this.apiKey}`,
+        'Authorization': \`Bearer \${this.apiKey}\`,
         'Content-Type': 'application/json'
       };
 
@@ -217,9 +230,9 @@
     }
 
     async sendBatch(events) {
-      const url = `${this.baseUrl}/tracking/events/batch`;
+      const url = \`\${this.baseUrl}/tracking/events/batch\`;
       const headers = {
-        'Authorization': `Bearer ${this.apiKey}`,
+        'Authorization': \`Bearer \${this.apiKey}\`,
         'Content-Type': 'application/json'
       };
 
@@ -438,3 +451,11 @@
   }
   
 })(typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : this);
+`;
+
+try {
+  fs.writeFileSync(browserBundlePath, browserCode, "utf8");
+  console.log("✅ Simple browser bundle created successfully!");
+} catch (error) {
+  console.error("❌ Error creating browser bundle:", error);
+}
